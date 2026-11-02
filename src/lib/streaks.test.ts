@@ -226,3 +226,33 @@ describe('date helpers', () => {
     expect(formatMonthYear('2026-08-18', 'en-US')).toBe('August 2026');
   });
 });
+
+// Pinned to US Eastern so these cover real clock changes. Vitest runs them with
+// TZ set in vite.config.ts, so the result does not depend on the machine's timezone.
+describe('daylight saving time (America/New_York)', () => {
+  it('steps one calendar day across the fall-back change', () => {
+    // Nov 1, 2026 is 25 hours long. Adding 24 hours would stay on Nov 1.
+    expect(addDays('2026-11-01', 1)).toBe('2026-11-02');
+    expect(addDays('2026-11-02', -1)).toBe('2026-11-01');
+  });
+
+  it('steps one calendar day across the spring-forward change', () => {
+    // Mar 8, 2026 is 23 hours long. Subtracting 24 hours from Mar 9 would skip it.
+    expect(addDays('2026-03-09', -1)).toBe('2026-03-08');
+    expect(addDays('2026-03-08', 1)).toBe('2026-03-09');
+  });
+
+  it('measures whole days across both changes', () => {
+    expect(daysBetween('2026-10-31', '2026-11-02')).toBe(2);
+    expect(daysBetween('2026-03-07', '2026-03-09')).toBe(2);
+  });
+
+  it('keeps a streak unbroken through a clock change', () => {
+    const fall = ['2026-10-30', '2026-10-31', '2026-11-01', '2026-11-02'];
+    expect(currentStreak(fall, '2026-11-02')).toBe(4);
+    expect(longestStreak(fall)).toBe(4);
+
+    const spring = ['2026-03-07', '2026-03-08', '2026-03-09'];
+    expect(currentStreak(spring, '2026-03-09')).toBe(3);
+  });
+});

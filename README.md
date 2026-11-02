@@ -40,7 +40,7 @@ src/
 ├── lib/
 │   ├── dates.ts        calendar-date helpers
 │   ├── streaks.ts      streak and stats calculation
-│   ├── streaks.test.ts 38 unit tests
+│   ├── streaks.test.ts 42 unit tests
 │   ├── storage.ts      localStorage read/write
 │   ├── types.ts        Habit, HabitStats
 │   ├── useHabits.ts    state and persistence hook
@@ -60,7 +60,7 @@ The streak logic lives in `src/lib/` as plain functions with no React imports. T
 
 A habit is completed on a *calendar day* in the user's own timezone, not at an instant in time. The obvious implementation, adding 86,400,000 milliseconds to step back a day, breaks twice a year: in autumn a day runs 25 hours, so you land on the same date twice; in spring you skip one entirely. Anyone whose streak crosses a daylight saving boundary watches it silently reset.
 
-So every date here is a `YYYY-MM-DD` string, and stepping between days goes through the `Date` constructor's month overflow behavior instead of millisecond arithmetic. Comparing two days becomes plain string comparison, which is also why the sort in `normalize()` needs no comparator. Tests cover month boundaries, year boundaries, and February 29 in a leap year.
+So every date here is a `YYYY-MM-DD` string, and stepping between days goes through the `Date` constructor's month overflow behavior instead of millisecond arithmetic. Comparing two days becomes plain string comparison, which is also why the sort in `normalize()` needs no comparator. Tests cover month boundaries, year boundaries, February 29 in a leap year, and both daylight saving changes. The test run pins its timezone to America/New_York so those clock changes happen on any machine.
 
 **A streak survives today not being logged yet.**
 
@@ -70,16 +70,16 @@ So every date here is a `YYYY-MM-DD` string, and stepping between days goes thro
 
 ## Tests
 
-38 unit tests covering the streak and date logic:
+42 unit tests covering the streak and date logic:
 
 ```
-✓ src/lib/streaks.test.ts (38 tests)
+✓ src/lib/streaks.test.ts (42 tests)
 
 Test Files  1 passed (1)
-     Tests  38 passed (38)
+     Tests  42 passed (42)
 ```
 
-They cover the ordinary cases and the ones that actually bite: duplicate entries, unsorted input, gaps between runs, a longest streak that is not the most recent one, month and year rollovers, leap years, future dates, and backfilled history that could otherwise push consistency above 100 percent.
+They cover the ordinary cases and the ones that actually bite: duplicate entries, unsorted input, gaps between runs, a longest streak that is not the most recent one, month and year rollovers, leap years, daylight saving changes, future dates, and backfilled history that could otherwise push consistency above 100 percent.
 
 ---
 
@@ -101,7 +101,7 @@ No UI framework and no state library. At this size, both would be more configura
 
 I'm DeVante Bush, a self-taught developer in Ohio. I build and ship products end to end through my studio, [KT Forge](https://ktforge.dev): two iOS apps on the App Store, a web app, and a commercial After Effects extension.
 
-[ktforge.dev](https://ktforge.dev) · [LinkedIn](https://linkedin.com/in/devante-bush) · [@JesusisKingx](https://github.com/JesusisKingx)
+[ktforge.dev](https://ktforge.dev) · [LinkedIn](https://linkedin.com/in/devante-bush) · [GitHub](https://github.com/ktforge)
 
 ## License
 

@@ -6,5 +6,7 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['src/**/*.test.ts'],
+    // Pin the timezone so the daylight saving tests hit real clock changes on any machine.
+    env: { TZ: 'America/New_York' },
   },
 })
