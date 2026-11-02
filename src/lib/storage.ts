@@ -6,7 +6,7 @@ const STORAGE_KEY = 'streak-tracker:habits:v1';
  * Reads habits from localStorage.
  *
  * Returns an empty list rather than throwing if the stored value is missing or
- * malformed — a corrupted key should cost the user their history, not the whole
+ * malformed. A corrupted key should cost the user their history, not the whole
  * app. Storage access itself can also throw in private browsing modes.
  */
 export function loadHabits(): Habit[] {
@@ -25,6 +25,6 @@ export function saveHabits(habits: readonly Habit[]): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(habits));
   } catch {
-    // Nothing useful to do here — the UI stays correct in memory either way.
+    // Nothing useful to do here. The UI stays correct in memory either way.
   }
 }
